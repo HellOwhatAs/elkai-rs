@@ -364,47 +364,47 @@ int ElkaiDeprecatedSolve(int dimension, float *weights, int *tour, int runs)
 }
 
 
-/*
- * This file contains the main function of the program.
- */
+// /*
+//  * This file contains the main function of the program.
+//  */
 
-int main(int argc, char * argv[])
-{
-    printf("This is a test.");
-    int tourSize;
-    int *tour;
-    gbString params = gb_make_string("RUNS = 1\nPROBLEM_FILE = :stdin:\n");
-    gbString problem = gb_make_string(
-        "TYPE : TSP\nDIMENSION : 4\nEDGE_WEIGHT_TYPE : EUC_2D\nNODE_COORD_SECTION\n"
-        "1 0.0 0.0\n"
-        "2 10.0 -5.3\n"
-        "3 1.0 -2.1\n"
-        "4 11.0 -3.0\n"
-        "EOF\n"
-        );
-    ElkaiSolveProblem(params, problem, &tourSize, &tour);
-    gb_free_string(params);
-    gb_free_string(problem);
-    for(int i = 0; i < tourSize; i++) {
-        printf("%d ", tour[i]);
-    }
-    printf("\niteration 1 complete.\n");
+// int main(int argc, char * argv[])
+// {
+//     printf("This is a test.");
+//     int tourSize;
+//     int *tour;
+//     gbString params = gb_make_string("RUNS = 1\nPROBLEM_FILE = :stdin:\n");
+//     gbString problem = gb_make_string(
+//         "TYPE : TSP\nDIMENSION : 4\nEDGE_WEIGHT_TYPE : EUC_2D\nNODE_COORD_SECTION\n"
+//         "1 0.0 0.0\n"
+//         "2 10.0 -5.3\n"
+//         "3 1.0 -2.1\n"
+//         "4 11.0 -3.0\n"
+//         "EOF\n"
+//         );
+//     ElkaiSolveProblem(params, problem, &tourSize, &tour);
+//     gb_free_string(params);
+//     gb_free_string(problem);
+//     for(int i = 0; i < tourSize; i++) {
+//         printf("%d ", tour[i]);
+//     }
+//     printf("\niteration 1 complete.\n");
 
-    params = gb_make_string("RUNS = 1\nPROBLEM_FILE = :stdin:\n");
-    problem = gb_make_string(
-        "TYPE : TSP\nDIMENSION : 4\nEDGE_WEIGHT_TYPE : EUC_2D\nNODE_COORD_SECTION\n"
-        "1 0.0 0.0\n"
-        "2 10.0 -5.3\n"
-        "3 1.0 -2.1\n"
-        "4 11.0 -3.0\n"
-        "EOF\n"
-        );
-    ElkaiSolveProblem(params, problem, &tourSize, &tour);
-    gb_free_string(params);
-    gb_free_string(problem);
-    for(int i = 0; i < tourSize; i++) {
-        printf("%d ", tour[i]);
-    }
+//     params = gb_make_string("RUNS = 1\nPROBLEM_FILE = :stdin:\n");
+//     problem = gb_make_string(
+//         "TYPE : TSP\nDIMENSION : 4\nEDGE_WEIGHT_TYPE : EUC_2D\nNODE_COORD_SECTION\n"
+//         "1 0.0 0.0\n"
+//         "2 10.0 -5.3\n"
+//         "3 1.0 -2.1\n"
+//         "4 11.0 -3.0\n"
+//         "EOF\n"
+//         );
+//     ElkaiSolveProblem(params, problem, &tourSize, &tour);
+//     gb_free_string(params);
+//     gb_free_string(problem);
+//     for(int i = 0; i < tourSize; i++) {
+//         printf("%d ", tour[i]);
+//     }
 
-    printf("\niteration 2 complete.\n");
-}
+//     printf("\niteration 2 complete.\n");
+// }
