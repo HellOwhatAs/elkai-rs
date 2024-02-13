@@ -7,7 +7,7 @@ description = "elkai-rs - a Rust library for solving TSP problems"
 readme = "README.md"
 repository = "https://github.com/HellOwhatAs/elkai-rs"
 license-file = "LICENSE"
-keywords = ["tsp", "travelling salesman problem", "solver", "atsp", "salesman", "travelling", "problem"]
+keywords = ["tsp", "atsp", "salesman"]
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
