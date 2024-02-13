@@ -15,7 +15,7 @@
 
 ```toml
 [dependencies]
-elkai-rs = { git = "https://github.com/HellOwhatAs/elkai-rs", tag = "v0.0.1" }
+elkai-rs = "0.1.1"
 ```
 
 ## Example usage
@@ -53,9 +53,6 @@ The LKH native code by Helsgaun is released for non-commercial use only. Therefo
 
 ## How it works internally
 
-* We refactored LKH such that it doesn't have global state and you don't need to restart the program in order to run another input problem
-* We added a hook in ReadProblem that allows reading problems from memory instead of files
-* We read the solution from the `Tour` variable and put it in a PyObject (Python list).
-* ✓ Valgrind passed on `d3d8c12`.
+* We link the C api of elkai to Rust with [cc-rs](https://github.com/rust-lang/cc-rs).
 
 ⚠️ elkai-rs takes a **global mutex** (just like what elkai did) during the solving phase which means two threads cannot solve problems at the same time. If you want to run other workloads at the same time, you have to run another process.
