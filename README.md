@@ -7,7 +7,7 @@
 
 ----
 
-* **based on [elkai](https://github.com/fikisipi/elkai) by fikisipi**: with proven optimal solutions up to N=315 and more accurate results than [Google's OR tools](https://developers.google.com/optimization/routing/tsp)
+* **based on [elkai](https://github.com/fikisipi/elkai) by fikisipi** **([LKH](http://akira.ruc.dk/~keld/research/LKH/) by Keld Helsgaun)**: with proven optimal solutions up to N=315 and more accurate results than [Google's OR tools](https://developers.google.com/optimization/routing/tsp)
 * **asymmetric and symmetric** [travelling salesman problems](https://en.wikipedia.org/wiki/Travelling_salesman_problem) support
 * **clean and simple API**: get results with one line calls
 
@@ -15,7 +15,7 @@
 
 ```toml
 [dependencies]
-elkai-rs = "0.1.1"
+elkai-rs = "0.1.2"
 ```
 
 ## Example usage
