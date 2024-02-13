@@ -1,6 +1,6 @@
 [package]
 name = "elkai-rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["HellOwhatAs"]
 description = "elkai-rs - a Rust library for solving TSP problems"
