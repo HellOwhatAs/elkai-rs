@@ -1,5 +1,5 @@
 <p align="center">
- <img src="https://github.com/HellOwhatAs/elkai-rs/assets/88815487/45999663-6687-40b9-af56-5108e6b61053" alt="" />
+ <img src="https://github.com/HellOwhatAs/elkai/assets/88815487/45999663-6687-40b9-af56-5108e6b61053" alt="" />
 </p>
 <p align="center">
 <em>elkai-rs - a Rust library for solving TSP problems</em>
@@ -19,7 +19,7 @@
 
 ```toml
 [dependencies]
-elkai-rs = "0.1.2"
+elkai-rs = "0.1.3"
 ```
 
 ## Example usage
