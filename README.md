@@ -30,9 +30,9 @@ use elkai_rs::Coordinates2D;
 
 fn main() {
     let cities = Coordinates2D::new(HashMap::from_iter([
-        ("city1", (0, 0)),
-        ("city2", (0, 4)),
-        ("city3", (5, 0)),
+        ("city1", (0.0, 0.0)),
+        ("city2", (0.0, 4.0)),
+        ("city3", (5.0, 0.0))
     ]));
     println!("{:?}", cities.solve(10));
 }

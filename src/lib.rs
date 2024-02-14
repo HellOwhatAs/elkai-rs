@@ -1,8 +1,55 @@
-use libc;
+//! elkai-rs is a rust library for solving travelling salesman problems (TSP) based on elkai (LKH 3)   
+//!
+//!  ----
+//!  
+//!  * **based on [elkai](https://github.com/fikisipi/elkai) by fikisipi** **([LKH](http://akira.ruc.dk/~keld/research/LKH/) by Keld Helsgaun)**: with proven optimal solutions up to N=315 and more accurate results than [Google's OR tools](https://developers.google.com/optimization/routing/tsp)
+//!  * **asymmetric and symmetric** [travelling salesman problems](https://en.wikipedia.org/wiki/Travelling_salesman_problem) support
+//!  * **clean and simple API**: get results with one line calls
+//!  
+//!  ## Example usage
+//!  
+//!  ```rust
+//!  use std::collections::HashMap;
+//!  use elkai_rs::Coordinates2D;
+//!  
+//!  fn main() {
+//!      let cities = Coordinates2D::new(HashMap::from_iter([
+//!          ("city1", (0.0, 0.0)),
+//!          ("city2", (0.0, 4.0)),
+//!          ("city3", (5.0, 0.0))
+//!      ]));
+//!      println!("{:?}", cities.solve(10));
+//!  }
+//!  ```
+//!  
+//!  ```rust
+//!  use elkai_rs::DistanceMatrix;
+//!  
+//!  fn main() {
+//!      let cities = DistanceMatrix::new(vec![
+//!          vec![0, 4, 0],
+//!          vec![0, 0, 5],
+//!          vec![0, 0, 0]
+//!      ]);
+//!      println!("{:?}", cities.solve(10));
+//!  }
+//!  ```
+//!  
+//!  ## License
+//!  
+//!  The LKH native code by Helsgaun is released for non-commercial use only. Therefore the same restriction applies to elkai-rs, which is explained in the `LICENSE` file. 
+//!  
+//!  ## How it works internally
+//!  
+//!  * We link the C api of elkai to Rust with [cc-rs](https://github.com/rust-lang/cc-rs).
+//!  
+//!  ⚠️ elkai-rs takes a **global mutex** (just like what elkai did) during the solving phase which means two threads cannot solve problems at the same time. If you want to run other workloads at the same time, you have to run another process.
+
+use libc::{c_uchar, size_t, c_int};
 use std::{collections::HashMap, sync::Mutex};
 
 extern "C" {
-    fn _solve_problem(paramsStr: *const libc::c_uchar, problemStr: *const libc::c_uchar, toursize: *mut libc::size_t) -> *mut libc::c_int;
+    fn _solve_problem(paramsStr: *const c_uchar, problemStr: *const c_uchar, toursize: *mut size_t) -> *mut c_int;
 }
 
 static ELKAI_MUTEX: Mutex<()> = Mutex::new(());
@@ -18,7 +65,7 @@ fn elkai_solve_problem(param: &str, problem: &str) -> Vec<usize> {
         _solve_problem(
             param.as_ptr(),
             problem.as_ptr(),
-            &mut toursize as *mut libc::size_t
+            &mut toursize as *mut size_t
         )
     };
     let res = unsafe {
@@ -47,11 +94,27 @@ fn is_symmetric_matrix<T: PartialEq>(m: &Vec<Vec<T>>) -> bool {
     return true;
 }
 
+/// A structure representing a matrix of float/int weights/distances.
+/// ## Example usage
+/// 
+/// ```rust
+/// use elkai_rs::DistanceMatrix;
+/// 
+/// fn main() {
+///     let cities = DistanceMatrix::new(vec![
+///         vec![0, 4, 0],
+///         vec![0, 0, 5],
+///         vec![0, 0, 0]
+///     ]);
+///     println!("{:?}", cities.solve(10));
+/// }
+/// ```
 pub struct DistanceMatrix<T: PartialEq + std::fmt::Display> {
     distances: Vec<Vec<T>>
 }
 
 impl<T: PartialEq + std::fmt::Display> DistanceMatrix<T> {
+    /// Creates the matrix structure representing a list of lists (2D matrix) of floats/ints.
     pub fn new(distances: Vec<Vec<T>>) -> Self {
         assert!(is_2d_matrix(&distances), "distances must be a 2D matrix");
         DistanceMatrix {
@@ -59,6 +122,7 @@ impl<T: PartialEq + std::fmt::Display> DistanceMatrix<T> {
         }
     }
 
+    /// Returns a list of indices that represent the TSP tour. You can adjust solver iterations with the runs parameter.
     pub fn solve(&self, runs: usize) -> Vec<usize> {
         assert!(runs >= 1, "runs must be a positive integer");
         let dimension = self.distances.len();
@@ -75,16 +139,34 @@ impl<T: PartialEq + std::fmt::Display> DistanceMatrix<T> {
     }
 }
 
+/// A structure representing coordinates of type {'city name': (x, y), ...}
+/// ## Example usage
+///  
+///  ```rust
+///  use std::collections::HashMap;
+///  use elkai_rs::Coordinates2D;
+///  
+///  fn main() {
+///      let cities = Coordinates2D::new(HashMap::from_iter([
+///          ("city1", (0.0, 0.0)),
+///          ("city2", (0.0, 4.0)),
+///          ("city3", (5.0, 0.0))
+///      ]));
+///      println!("{:?}", cities.solve(10));
+///  }
+///  ```
 pub struct Coordinates2D<'a, T: std::fmt::Display> {
     coords: HashMap<&'a str, (T, T)>
 }
 
 impl<'a, T: std::fmt::Display> Coordinates2D<'a, T> {
+    /// Creates the structure representing coordinates of type {'city name': (x, y), ...}
     pub fn new(coords: HashMap<&'a str, (T, T)>) -> Self {
         assert!(coords.len() >= 3, "there must be at least 3 cities");
         Coordinates2D { coords }
     }
 
+    /// Returns a list of city names in the order of the TSP tour. You can adjust solver iterations with the runs parameter.
     pub fn solve(&self, runs: usize) -> Vec<&'a str> {
         assert!(runs >= 1, "runs must be a positive integer");
         let keys: Vec<&&str> = self.coords.keys().collect();
@@ -133,9 +215,9 @@ mod test {
     #[test]
     fn coordinates2d() {
         let s = Coordinates2D::new(HashMap::from_iter([
-            ("city1", (0, 0)),
-            ("city2", (0, 4)),
-            ("city3", (5, 0))
+            ("city1", (0.0, 0.0)),
+            ("city2", (0.0, 4.0)),
+            ("city3", (5.0, 0.0))
         ]));
         println!("{:?}", s.solve(10));
     }
