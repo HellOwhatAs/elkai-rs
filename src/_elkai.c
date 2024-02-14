@@ -13,9 +13,14 @@ extern void ElkaiSolveProblem(gbString params, gbString problem, int *tourSize, 
 int* _solve_problem(const char *paramsStr, const char *problemStr, size_t* toursize) {
     gbString params = gb_make_string(paramsStr);
     gbString problem = gb_make_string(problemStr);
+    
     int tourSize = 0;
     int *tourPtr;
     ElkaiSolveProblem(params, problem, &tourSize, &tourPtr);
+
+    gb_free_string(params);
+    gb_free_string(problem);
+
     *toursize = tourSize;
     return tourPtr;
 }

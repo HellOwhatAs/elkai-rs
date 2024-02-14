@@ -7,7 +7,7 @@ extern "C" {
 
 static ELKAI_MUTEX: Mutex<()> = Mutex::new(());
 
-pub fn elkai_solve_problem(param: &str, problem: &str) -> Vec<usize> {
+fn elkai_solve_problem(param: &str, problem: &str) -> Vec<usize> {
     assert!(param.ends_with('\0') && problem.ends_with('\0'), "input string must end with '\\0'");
 
     let mut toursize: usize = 0;
@@ -117,7 +117,7 @@ mod test {
     fn elkai_str() {
         let param = "RUNS = 10\nPROBLEM_FILE = :stdin:\n\0".to_string();
         let problem = "TYPE : ATSP\nDIMENSION : 3\nEDGE_WEIGHT_TYPE : EXPLICIT\nEDGE_WEIGHT_FORMAT : FULL_MATRIX\nEDGE_WEIGHT_SECTION\n0 4 0\n0 0 5\n0 0 0\n\0".to_string();
-        print!("{:?} ", elkai_solve_problem(&param, &problem));
+        println!("{:?} ", elkai_solve_problem(&param, &problem));
     }
 
     #[test]
