@@ -7,6 +7,7 @@
 <p align="center">
 <a href="https://crates.io/crates/elkai-rs"><img src="https://img.shields.io/crates/v/elkai-rs" alt="crates.io"></a>
 <a href="https://docs.rs/elkai-rs/"><img src="https://docs.rs/elkai-rs/badge.svg" alt="docs"></a>
+<a href="https://github.com/HellOwhatAs/elkai-rs/"><img src="https://img.shields.io/github/repo-size/HellOwhatAs/elkai-rs" alt="repo"></a>
 </p>
 
 ----
