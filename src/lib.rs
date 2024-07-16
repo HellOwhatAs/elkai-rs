@@ -109,11 +109,11 @@ fn is_symmetric_matrix<T: PartialEq>(m: &Vec<Vec<T>>) -> bool {
 ///     println!("{:?}", cities.solve(10));
 /// }
 /// ```
-pub struct DistanceMatrix<T: PartialEq + std::fmt::Display> {
+pub struct DistanceMatrix<T: num_traits::Num + std::fmt::Display> {
     distances: Vec<Vec<T>>
 }
 
-impl<T: PartialEq + std::fmt::Display> DistanceMatrix<T> {
+impl<T: num_traits::Num + std::fmt::Display> DistanceMatrix<T> {
     /// Creates the matrix structure representing a list of lists (2D matrix) of floats/ints.
     pub fn new(distances: Vec<Vec<T>>) -> Self {
         assert!(is_2d_matrix(&distances), "distances must be a 2D matrix");
@@ -155,11 +155,11 @@ impl<T: PartialEq + std::fmt::Display> DistanceMatrix<T> {
 ///      println!("{:?}", cities.solve(10));
 ///  }
 ///  ```
-pub struct Coordinates2D<'a, T: std::fmt::Display> {
+pub struct Coordinates2D<'a, T: num_traits::Num + std::fmt::Display> {
     coords: HashMap<&'a str, (T, T)>
 }
 
-impl<'a, T: std::fmt::Display> Coordinates2D<'a, T> {
+impl<'a, T: num_traits::Num + std::fmt::Display> Coordinates2D<'a, T> {
     /// Creates the structure representing coordinates of type {'city name': (x, y), ...}
     pub fn new(coords: HashMap<&'a str, (T, T)>) -> Self {
         assert!(coords.len() >= 3, "there must be at least 3 cities");
