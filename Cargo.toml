@@ -1,6 +1,6 @@
 [package]
 name = "elkai-rs"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["HellOwhatAs"]
 description = "elkai-rs is a rust library for solving travelling salesman problems (TSP) based on elkai (LKH 3)"
