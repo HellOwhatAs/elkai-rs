@@ -45,6 +45,7 @@
 //!  
 //!  ⚠️ elkai-rs takes a **global mutex** (just like what elkai did) during the solving phase which means two threads cannot solve problems at the same time. If you want to run other workloads at the same time, you have to run another process.
 
+#![allow(private_bounds)]
 use libc::{c_uchar, size_t, c_int};
 use std::{collections::HashMap, sync::Mutex};
 
@@ -94,6 +95,12 @@ fn is_symmetric_matrix<T: PartialEq>(m: &Vec<Vec<T>>) -> bool {
     return true;
 }
 
+trait Num: num_traits::Num + std::fmt::Display {}
+macro_rules! num_trait_impl { ($name:ident for $($t:ty)*) => ($(impl $name for $t {})*) }
+num_trait_impl!(Num for usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f32 f64);
+impl<T: num_traits::Num + std::fmt::Display> Num for std::num::Wrapping<T>
+where std::num::Wrapping<T>: num_traits::NumOps {}
+
 /// A structure representing a matrix of float/int weights/distances.
 /// ## Example usage
 /// 
@@ -109,11 +116,11 @@ fn is_symmetric_matrix<T: PartialEq>(m: &Vec<Vec<T>>) -> bool {
 ///     println!("{:?}", cities.solve(10));
 /// }
 /// ```
-pub struct DistanceMatrix<T: num_traits::Num + std::fmt::Display> {
+pub struct DistanceMatrix<T: Num> {
     distances: Vec<Vec<T>>
 }
 
-impl<T: num_traits::Num + std::fmt::Display> DistanceMatrix<T> {
+impl<T: Num> DistanceMatrix<T> {
     /// Creates the matrix structure representing a list of lists (2D matrix) of floats/ints.
     pub fn new(distances: Vec<Vec<T>>) -> Self {
         assert!(is_2d_matrix(&distances), "distances must be a 2D matrix");
@@ -155,11 +162,11 @@ impl<T: num_traits::Num + std::fmt::Display> DistanceMatrix<T> {
 ///      println!("{:?}", cities.solve(10));
 ///  }
 ///  ```
-pub struct Coordinates2D<'a, T: num_traits::Num + std::fmt::Display> {
+pub struct Coordinates2D<'a, T: Num> {
     coords: HashMap<&'a str, (T, T)>
 }
 
-impl<'a, T: num_traits::Num + std::fmt::Display> Coordinates2D<'a, T> {
+impl<'a, T: Num> Coordinates2D<'a, T> {
     /// Creates the structure representing coordinates of type {'city name': (x, y), ...}
     pub fn new(coords: HashMap<&'a str, (T, T)>) -> Self {
         assert!(coords.len() >= 3, "there must be at least 3 cities");
