@@ -1,44 +1,17 @@
 #include "LKH.h"
 #include <stdarg.h>
-
-#ifdef PYTHON_ERR_HANDLE
-
 #include "setjmp.h"
 
 jmp_buf ErrorJumpBuffer;
-
-#include <Python.h>
+char *err_msg_buf;
 
 void eprintf(const char *fmt, ...)
 {
     va_list args;
 
-    char err[1024];
     va_start(args, fmt);
-    int res = vsprintf(err, fmt, args);
+    int res = vsprintf(err_msg_buf, fmt, args);
     va_end(args);
 
-    PyErr_SetString(PyExc_TypeError, err);
     longjmp(ErrorJumpBuffer, 1);
 }
-
-#else
-
-/*
- * The eprintf function prints an error message and exits.
- */
-
-void eprintf(const char *fmt, ...)
-{
-    va_list args;
-    if (LastLine && *LastLine)
-        fprintf(stderr, "\n%s\n", LastLine);
-    fprintf(stderr, "\n*** Error ***\n");
-    va_start(args, fmt);
-    vfprintf(stderr, fmt, args);
-    va_end(args);
-    fprintf(stderr, "\n");
-    exit(EXIT_FAILURE);
-}
-
-#endif

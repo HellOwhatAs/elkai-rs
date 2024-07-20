@@ -20,7 +20,7 @@
 
 ```toml
 [dependencies]
-elkai-rs = "0.1.5"
+elkai-rs = "0.1.6"
 ```
 
 ## Example usage

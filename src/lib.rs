@@ -50,30 +50,34 @@ use libc::{c_uchar, size_t, c_int};
 use std::{collections::HashMap, sync::Mutex};
 
 extern "C" {
-    fn _solve_problem(paramsStr: *const c_uchar, problemStr: *const c_uchar, toursize: *mut size_t) -> *mut c_int;
+    fn _solve_problem(paramsStr: *const c_uchar, problemStr: *const c_uchar, toursize: *mut size_t, msg_buf: *mut u8) -> *mut c_int;
 }
 
-static ELKAI_MUTEX: Mutex<()> = Mutex::new(());
+static ELKAI_MUTEX: Mutex<[u8; 1024]> = Mutex::new([0; 1024]);
 
 fn elkai_solve_problem(param: &str, problem: &str) -> Vec<usize> {
     assert!(param.ends_with('\0') && problem.ends_with('\0'), "input string must end with '\\0'");
 
     let mut toursize: usize = 0;
 
-    let lock = ELKAI_MUTEX.lock().unwrap();
+    let mut msg_buf = ELKAI_MUTEX.lock().unwrap();
     
     let raw_pointer = unsafe {
         _solve_problem(
             param.as_ptr(),
             problem.as_ptr(),
-            &mut toursize as *mut size_t
+            &mut toursize as *mut size_t,
+            msg_buf.as_mut_ptr()
         )
     };
+    if toursize == 0 {
+        panic!("{}", String::from_iter(msg_buf.iter().map(|x| *x as char).take_while(|c| *c != '\0')))
+    }
     let res = unsafe {
         &*std::ptr::slice_from_raw_parts(raw_pointer, toursize)
     }.iter().map(|e| (*e - 1) as usize).collect();
     
-    drop(lock);
+    drop(msg_buf);
     
     res
 }
