@@ -70,7 +70,7 @@ fn elkai_solve_problem(param: &str, problem: &str) -> Vec<usize> {
             msg_buf.as_mut_ptr()
         )
     };
-    if toursize == 0 {
+    if raw_pointer == std::ptr::null_mut() {
         panic!("{}", String::from_iter(msg_buf.iter().map(|x| *x as char).take_while(|c| *c != '\0')))
     }
     let res = unsafe {

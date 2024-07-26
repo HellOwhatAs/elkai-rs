@@ -23,7 +23,7 @@ int* _solve_problem(const char *paramsStr, const char *problemStr, size_t* tours
     if(jmpRes != 0) {
         gb_free_string(params);
         gb_free_string(problem);
-        return 0;
+        return NULL;
     }
 
     ElkaiSolveProblem(params, problem, &tourSize, &tourPtr);
