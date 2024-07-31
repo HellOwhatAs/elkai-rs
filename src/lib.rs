@@ -105,6 +105,16 @@ num_trait_impl!(Num for usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f32 
 impl<T: num_traits::Num + std::fmt::Display> Num for std::num::Wrapping<T>
 where std::num::Wrapping<T>: num_traits::NumOps {}
 
+/// solve problem with original LKH input as strings
+/// `param`: content of *.par file
+/// `param`: content of *.[a]tsp file
+/// note to set `PROBLEM_FILE = :stdin:` if use arg `problem`.
+pub fn lkh_solve(mut param: String, mut problem: String) -> Vec<usize> {
+    if !param.ends_with('\0') { param.push('\0'); }
+    if !problem.ends_with('\0') { problem.push('\0'); }
+    elkai_solve_problem(&param, &problem)
+}
+
 /// A structure representing a matrix of float/int weights/distances.
 /// ## Example usage
 /// 
@@ -204,7 +214,7 @@ impl<'a, T: Num> Coordinates2D<'a, T> {
 #[cfg(test)]
 mod test {
     use std::{collections::HashMap, io::Read};
-    use crate::{elkai_solve_problem, Coordinates2D, DistanceMatrix};
+    use crate::{elkai_solve_problem, lkh_solve, Coordinates2D, DistanceMatrix, Num};
 
     #[test]
     fn elkai_str() {
@@ -268,9 +278,16 @@ mod test {
         println!("{:?}", coords_result(&coords, &solution))
     }
 
-    fn distances_result<T: std::iter::Sum + Copy + std::ops::AddAssign>(distances: &Vec<Vec<T>>, solution: &Vec<usize>) -> T {
+    fn distances_result<T: Num + std::iter::Sum + Copy + std::ops::AddAssign>(distances: &Vec<Vec<T>>, solution: &Vec<usize>) -> T {
         let mut res = (1..solution.len()).into_iter().map(|i| {
-            distances[solution[i - 1]][solution[i]]
+            // distances[solution[i - 1]][solution[i]]
+            match distances.get(solution[i - 1]) {
+                Some(d1) => match d1.get(solution[i]) {
+                    Some(&d) => d,
+                    _ => T::zero()
+                },
+                _ => T::zero()
+            }
         }).sum::<T>();
         res += distances[*solution.last().unwrap()][*solution.first().unwrap()];
         res
@@ -278,18 +295,22 @@ mod test {
 
     #[test]
     fn whizzkids96() {
-        let mut s = String::new();
-        std::fs::File::open("LKH-3.0.8/whizzkids96.atsp").unwrap().read_to_string(&mut s).unwrap();
-        let start = s.find("EDGE_WEIGHT_SECTION").unwrap() + "EDGE_WEIGHT_SECTION".len();
-        let distances = s[start..].trim().lines().map(|line| line.split(' ').filter_map(|e| {
+        let mut problem = String::new();
+        std::fs::File::open("LKH-3.0.8/whizzkids96.atsp").unwrap().read_to_string(&mut problem).unwrap();
+        let mut param = String::new();
+        std::fs::File::open("LKH-3.0.8/whizzkids96.par").unwrap().read_to_string(&mut param).unwrap();
+        param = param.replace("whizzkids96.atsp", ":stdin:");
+
+        let start = problem.find("EDGE_WEIGHT_SECTION").unwrap() + "EDGE_WEIGHT_SECTION".len();
+        let distances = problem[start..].trim().lines().map(|line| line.split(' ').filter_map(|e| {
             let e = e.trim();
             match e.is_empty() {
                 true => None,
                 false => Some(e.parse::<usize>().unwrap()),
             }
         }).collect::<Vec<_>>()).collect::<Vec<_>>();
-        let s = DistanceMatrix::new(distances.clone());
-        let solution = s.solve(10);
+
+        let solution = lkh_solve(param, problem);
         println!("{:?}", solution);
         println!("{:?}", distances_result(&distances, &solution));
     }
