@@ -16,7 +16,7 @@ checksum = "26a5c3fd7bfa1ce3897a3a3501d362b2d87b7f2583ebcb4a949ec25911025cbc"
 
 [[package]]
 name = "elkai-rs"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "cc",
  "glob",
