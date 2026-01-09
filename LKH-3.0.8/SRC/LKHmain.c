@@ -202,6 +202,8 @@ void ElkaiSolveProblem(gbString params, gbString problem, int *tourSize, int **t
         ProblemFileName = 0;
     }
 
+    FreeStructures();
+
     *tourSize = ReadableTourSize;
 
     if(tourPtr != 0) {

@@ -46,6 +46,11 @@ void FreeStructures()
     Free(cycle);
     Free(G);
     FreePopulation();
+
+    FirstNode = 0;
+    FirstActive = LastActive = 0;
+    Norm = 0;
+    Penalty = 0;
 }
 
 /*      
